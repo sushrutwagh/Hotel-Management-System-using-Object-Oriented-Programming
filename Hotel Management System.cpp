@@ -1,16 +1,23 @@
-#include <iostream>
-#include <chrono>
-#include <thread>
+#include<iostream>
+#include<chrono>
+#include<thread>
 #include<unordered_map>
 #include<conio.h>
 #include<vector>
 using namespace std;
 
+void clearScreen(){
+    system("cls");
+}
+
+void pauseScreen(){
+    system("pause");
+}
+
 void menu()
 {
-         system("Color BD");
-
-        cout<<" _______________________________________________________________________________________"<<endl;
+    system("Color BD");
+    cout<<" _______________________________________________________________________________________"<<endl;
     cout<<"|    "<<"                                                                                   |"<<endl;
     cout<<"|    "<<"Banana Milkshake....................................................... Rs 80      |"<<endl;
     cout<<"|    "<<"Bhel Puri.............................................................. Rs 25      |"<<endl;
@@ -46,92 +53,83 @@ void menu()
     cout<<"|    "<<"Veg. Sandwich.......................................................... Rs 60      |"<<endl;
     cout<<"|_______________________________________________________________________________________|"<<endl;
     cout<<endl<<endl<<endl<<endl<<endl;
-    system("pause");
-    system("cls");
+    pauseScreen();
+    clearScreen();
 }
 
-
-void check_order_contents(unordered_map<string,int>&m,unordered_map<string,int>::iterator it,unordered_map<string,int>umm,unordered_map<string,int>::iterator it2)
+long long showCurrentOrderList(unordered_map<string,pair<int,int>>&menuItem,unordered_map<string,pair<int,int>>::iterator currentItem )
 {
-      int total=0;
+    long long total=0;
     cout<<"  ________________________________________________________________"<<endl<<endl;
-
     cout<<"     ITEM NAME           QUANTITY         RATE       SUB TOTAL "<<endl;
     cout<<"  ________________________________________________________________"<<endl<<endl;
 
-    for(it=m.begin(),it2=umm.begin();it!=m.end(),it2!=umm.end();++it,++it2){
-        if(it->second!=0){
-            total=total+(it->second)*(it2->second);
-            cout<<"   "<<it->first<<"     "<<it->second<<"             "<<it2->second<<"           "<<(it->second)*(it2->second)<<endl;
+    for(currentItem =menuItem.begin();currentItem !=menuItem.end(); ++currentItem){
+        if(currentItem ->second.second!=0){
+            total=total+(currentItem ->second.first)*(currentItem ->second.second);
+            cout<<"   "<<currentItem ->first<<"     "<<currentItem ->second.second<<"             "<<currentItem ->second.first<<"           "<<(currentItem ->second.first)*(currentItem ->second.second)<<endl;
         }
     }
     cout<<"  ________________________________________________________________"<<endl<<endl;
-
-    system("pause");
-    system("cls");
+    return total;
     }
 
 
-
-
-
-
-
-class Guest                                         //variables: num
+class Guest
 {
     protected:
-        int num_guests;
+        int totalGuestCount;
         int id;
         string address;
         long long phone;
-        int number_of_days;
-        double adv_pay;
-        string gnames[340];
+        int numberOfDays;
+        double advancePayment;
+        string guestNames[340];
     public:
-        vector<int>food_cost;
-        void get_food_cost(int cost)
+        vector<int>foodCost;
+        void addFoodCost(int cost)
         {
-            food_cost.push_back(cost);
+            foodCost.push_back(cost);
         }
 
-        int return_food_cost()
+        int getFoodCost()
         {
             int total = 0;
-            int s = food_cost.size();
-            for(int i = 0; i<s; ++i)
+            int itemCount = foodCost.size();
+            for(int currentItem = 0; currentItem<itemCount; ++currentItem)
             {
-                total = total + food_cost[i];
+                total = total + foodCost[currentItem];
             }
             return total;
         }
-        void clear_food_cost()
+        void clearFoodCost()
         {
-            food_cost.clear();
+            foodCost.clear();
         }
 
-        void createGuest(double gtotal)
+        void createGuest(double dailyRent)
         {
             do
             {
                 cout<<"Enter number of guests   : ";
-                cin>>num_guests;
-                if(num_guests<1)
+                cin>>totalGuestCount;
+                if(totalGuestCount<1)
                 {
                     cout<<endl;
                     cout<<"Invalid Input"<<endl;
                     cout<<"Number of guests should be greater than 0"<<endl;
                     cout<<endl;
                 }
-            }while(num_guests<1);
+            }while(totalGuestCount<1);
 
-            for(int i = 0 ; i < num_guests ; i++)
+            for(int currentGuestCount = 0 ; currentGuestCount < totalGuestCount ; currentGuestCount++)
             {
-                cout<<"Enter guest "<<i+1<<" name       : ";
-                if(i ==0)
+                cout<<"Enter guest "<<currentGuestCount+1<<" name       : ";
+                if(currentGuestCount ==0)
                 {
                     cin.ignore();
                 }
-                getline(cin,gnames[i]);
+                getline(cin,guestNames[currentGuestCount]);
             }
             cout<<"Enter the Address        : ";
                cin.ignore();
@@ -139,96 +137,91 @@ class Guest                                         //variables: num
                do
             {
                 cout<<"Enter the Number of Days : ";
-                cin>> number_of_days;
-                if(number_of_days<1)
+                cin>> numberOfDays;
+                if(numberOfDays<1)
                 {
                     cout<<endl;
                     cout<<"Invalid Input"<<endl;
                     cout<<"Number of  days should be greater than 0"<<endl;
                     cout<<endl;
                 }
-            }while(number_of_days<1);
-            int check;
+            }while(numberOfDays<1);
+            bool phonoNumberValidity;
             do{
-
-                   check = 0;
+                   phonoNumberValidity = false;
             cout<<"Enter the Phone Number   : ";
-
             cin>>phone;
             if(phone<1000000000 || phone>9999999999)
             {
-                check = 1;
+                phonoNumberValidity = true;
             }
-            if(check==1)
+            if(phonoNumberValidity==true)
             {
                 cout<<endl;
                 cout<<"Please enter a 10 digit phone Number"<<endl;
                 cout<<endl;
             }
-            }while(check==1);
-            int check98;
+            }while(phonoNumberValidity==true);
+
+            bool advancePaymentValidity;
             do
             {
-                check98 = 0;
+                advancePaymentValidity = false;
                 cout<<"Enter Advance Payment Amount (minimum Rs. 500) : ";
-                cin>>adv_pay;
-                if(adv_pay > gtotal*number_of_days)
+                cin>>advancePayment;
+                if(advancePayment > dailyRent*numberOfDays)
                 {
-                    check98 = 1;
+                    advancePaymentValidity = true;
                     cout<<endl;
                     cout<<"Advance exceeds total payable amount"<<endl;
                     cout<<endl;
                 }
-                else if(adv_pay<500)
+                else if(advancePayment<500)
                 {
-                    check98 = 1;
+                    advancePaymentValidity = true;
                     cout<<endl;
                     cout<<"Minimum Advance to Check-In is Rs. 500"<<endl;
                     cout<<endl;
                 }
-            }while(check98 == 1);
-            cout<<"Advance payment of "<<adv_pay<<" received, thank you !"<<endl;
+            }while(advancePaymentValidity == true);
+            cout<<"Advance payment of "<<advancePayment<<" received, thank you !"<<endl;
 
         }
 
-
-        int get_number_of_days()
+        int getNumberOfDays()
         {
-            return number_of_days;
+            return numberOfDays;
         }
 
-
-        long long get_phone()
+        long long getPhone()
         {
             return phone;
         }
 
-
-        int get_adv_pay()
+        int getAdvancePayment()
         {
-            return adv_pay;
-        }
-
-        void change_phone(long long x)
-        {
-            phone = x;
+            return advancePayment;
         }
 };
+
+
 
 class Room : public Guest
 {
     protected:
-        string rtype;
-        string rsize;
-        int ac;
-        int rno;
-        double rent;
-        int status;
-        int total;
-        int pricetype;
-        int pricesize;
-        int priceac;
-
+        string roomType;
+        string roomSize;
+        int presentAC;
+        int roomNumber;
+        int roomStatus;
+        int pricePerDay;
+        int priceType;
+        int priceSize;
+        int priceAC;
+// counts of room with the format {roomSize, roomType, AC presence}
+// for roomSize , 1 = small, 2 = medium, 3 = large
+// for roomType , 1 = comfort, 2 = deluxe, 3 = premium
+// for AC presence, 0 = AC not present, 1 = AC present
         int count110 = 10;
         int count111 = 20;
         int count120 = 5;
@@ -245,78 +238,78 @@ class Room : public Guest
         int count321 = 3;
         int count331 = 5;
         int totalcount = 100;
-
     public:
         Room()
         {
-            rno = 101;
-            rsize = "small";
-            rtype = "comfort";
-            ac = 1;
-            status = 0;
-            priceac = 1000;
-            pricesize = 1000;
-            pricetype = 1000;
-            total = priceac + pricesize + pricetype;
+            roomNumber = 101;
+            roomSize = "small";
+            roomType = "comfort";
+            presentAC = 1;
+            roomStatus = 0;
+            priceAC = 1000;
+            priceSize = 1000;
+            priceType = 1000;
+            pricePerDay = priceAC + priceSize + priceType;
         }
 
-        Room(Room &obj, int s, int t, int a)
+        Room(Room &room, int rSize, int rType, int rAC)
         {
-            if(obj.rno % 100 == 10)
+            if(room.roomNumber % 100 == 10)
             {
-                rno = obj.rno + 91;
+                roomNumber = room.roomNumber + 91;
             }
             else
             {
-                rno = obj.rno + 1;
+                roomNumber = room.roomNumber + 1;
             }
-            if(s == 1)
+            if(rSize == 1)
             {
-                rsize = "small";
-                pricesize = 1000;
+                roomSize = "small";
+                priceSize = 1000;
             }
-            else if (s == 2)
+            else if (rSize == 2)
             {
-                rsize = "medium";
-                pricesize = 1500;
+                roomSize = "medium";
+                priceSize = 1500;
             }
-            else if (s == 3)
+            else if (rSize == 3)
             {
-                rsize = "large";
-                pricesize = 2000;
+                roomSize = "large";
+                priceSize = 2000;
             }
 
-            if(t == 1)
+            if(rType == 1)
             {
-                rtype = "comfort";
-                pricetype = 1000;
+                roomType = "comfort";
+                priceType = 1000;
             }
-            else if (t == 2)
+            else if (rType == 2)
             {
-                rtype = "deluxe";
-                pricetype = 1500;
+                roomType = "deluxe";
+                priceType = 1500;
             }
-            else if (t == 3)
+            else if (rType == 3)
             {
-                rtype = "premium";
-                pricetype = 2000;
+                roomType = "premium";
+                priceType = 2000;
             }
 
-            if(a == 0)
+            if(rAC == 0)
             {
-                ac = 0;
-                priceac = 0;
+                presentAC = 0;
+                priceAC = 0;
             }
-            else if(a == 1)
+            else if(rAC == 1)
             {
-                ac = 1;
-                priceac = 1000;
+                presentAC = 1;
+                priceAC = 1000;
             }
-            total = pricesize + pricetype + priceac;
+            pricePerDay = priceSize + priceType + priceAC;
         }
-        int checkStatus()
+
+        int checkRoomStatus()
         {
-            if(status==0)
+            if(roomStatus==0)
             {
                 return 0;
             }
@@ -326,80 +319,28 @@ class Room : public Guest
             }
         }
 
-        /*double know_rsize()
+        double calculateTotal(double finalRoomSize, double finalRoomType, double finalAC)
         {
-            double rs;
-                if(rsize == "small")
-                {
-                    rs = 1;
-                }
-                else if(rsize == "medium")
-                {
-                    rs = 1.5;
-                }
-                else if(rsize == "large")
-                {
-                    rs = 2;
-                }
-                return rs;
+            double totalAmount = 1000*finalRoomSize + finalRoomType*1000 + 1000*finalAC;
+            return totalAmount;
         }
 
-        double know_rtype()
+        void displayAllGuestDetails()
         {
-            double rt;
-                if(rtype == "comfort")
-                {
-                    rt = 1;
-                }
-                else if(rtype == "deluxe")
-                {
-                    rt = 1.5;
-                }
-                else if(rtype == "premium")
-                {
-                    rt = 2;
-                }
-                return rt;
-        }
-
-
-
-        double know_ac()
-        {
-            double ra;
-                if(ac == 0)
-                {
-                    ra = 0;
-                }
-                else if(ac == 1)
-                {
-                    ra = 1;
-                }
-                return ra;
-        } */
-
-        double calc_total(double rumsize, double rumtype, double rumac)
-        {
-            double totalam = 1000*rumsize + rumtype*1000 + 1000*rumac;
-            return totalam;
-        }
-
-        void display()
-        {
-            cout<<"Guest ID : "<<rno<<endl;
+            cout<<"Guest ID : "<<roomNumber<<endl;
             cout<<"Guest Names "<<endl;
-            for(int i = 0 ; i < num_guests ; i++)
+            for(int guestNumber = 0 ; guestNumber < totalGuestCount ; guestNumber++)
             {
-                cout<<"  Guest "<<i+1<<" Name : "<<gnames[i]<<endl;
+                cout<<"  Guest "<<guestNumber+1<<" Name : "<<guestNames[guestNumber]<<endl;
             }
             cout<<"Guest Address : "<<address<<endl;
             cout<<"Phone number : "<<phone<<endl;
-            cout<<"Number of Days booked : "<<number_of_days<<endl;
+            cout<<"Number of Days booked : "<<numberOfDays<<endl;
             cout<<"Advance Payment : "<<
-            adv_pay<<endl;
-            cout<<"Room Number : "<<rno<<endl;
+            advancePayment<<endl;
+            cout<<"Room Number : "<<roomNumber<<endl;
             string str;
-            if(ac==1)
+            if(presentAC==1)
             {
                 str="AC";
             }
@@ -407,213 +348,102 @@ class Room : public Guest
             {
                 str="Non-AC";
             }
-            cout<<"Room Details : "<<rsize<<" "<<rtype<<" "<<str<<endl;
-            cout<<"Room cost : Rs. "<<total<<endl;
+            cout<<"Room Details : "<<roomSize<<" "<<roomType<<" "<<str<<endl;
+            cout<<"Room cost : Rs. "<<pricePerDay<<endl;
         }
 
-        void rcheckout()
+        void roomCheckOut()
         {
-            status = 0; //available now
+            roomStatus = 0; //available now
             phone = 0;
-            num_guests = 0;
+            totalGuestCount = 0;
             address.clear();
-            number_of_days = 0;
-            adv_pay = 0;
-            for(int j = 0 ; j < 340 ; j++)
+            numberOfDays = 0;
+            advancePayment = 0;
+            for(int guestNum = 0 ; guestNum < 340 ; guestNum++)
             {
-                gnames[j].clear();
+                guestNames[guestNum].clear();
             }
         }
 
-        void changeStatus()
+        void changeRoomStatus()
         {
-            if(status==1)
+            if(roomStatus==1)
             {
-                status=0;
+                roomStatus=0;
             }
             else
             {
-                status=1;
+                roomStatus=1;
             }
         }
 
-        string iwantroomsize()
+        string getRoomSize()
         {
-            string roomsize = rsize;
-            return roomsize;
+            string roomSz = roomSize;
+            return roomSz;
         }
-        string iwantroomtype()
+        string getRoomType()
         {
-            string roomtype = rtype;
-            return roomtype;
+            string roomTp = roomType;
+            return roomTp;
         }
-        int iwantac()
+        int getACStatus()
         {
-            int iwantac = ac;
-            return iwantac;
+            int acStatus = presentAC;
+            return acStatus;
         }
-        int get_rno()
+        int getRoomNumber()
         {
-            int iwantrno = rno;
-            return iwantrno;
+            int roomNo = roomNumber;
+            return roomNo;
         }
-        int get_total()
+        int getRoomTotal()
         {
-            int iwanttotal = total;
-            return iwanttotal;
+            int roomTotal = pricePerDay;
+            return roomTotal;
         }
 
 };
 
-class Guest_in_room : public Room
+
+
+
+class GuestOccupiedRoom : public Room
 {
     public:
 
-        int smallCheck(Room objarr[])
-        {
-            int i = 0;
-            int found = 0;
-            while(i < 100 && found == 0)
-            {
-                if(objarr[i].iwantroomsize() == "small" && objarr[i].checkStatus() == 0)
-                {
-                    found = 1;
-                }
-                i++;
-            }
-            if(found == 0)
-            {
-                return 1;
-            }
-            else
-            {
-                return 0;
+        void roomUnavailableMessage(bool availabilityStatus){
+            if(availabilityStatus == true){
+                cout<<endl;
+                cout<<"Sorry, your Desired Room is unavailable"<<endl;
+                cout<<"Please try some different type of room"<<endl;
+                cout<<endl;
             }
         }
 
-        int mediumCheck(Room objarr[])
-        {
-            int i = 0;
-            int found = 0;
-            while(i < 100 && found == 0)
-            {
-                if(objarr[i].iwantroomsize() == "medium" && objarr[i].checkStatus() == 0)
-                {
-                    found = 1;
-                }
-                i++;
-            }
-            if(found == 0)
-            {
-                return 1;
-            }
-            else
-            {
-                return 0;
-            }
+        bool checkAndAllocateRoom(Room &alRoom, double &totalStayRent, bool &roomAvailable){
+                    if(alRoom.checkRoomStatus() == 0)
+                    {
+                        alRoom.changeRoomStatus();
+                        alRoom.createGuest(totalStayRent);
+                        id = alRoom.getRoomNumber();
+                        cout<<"Room number "<<id<<" alloted"<<endl;
+                        cout<<"We hope you have a pleasant stay"<<endl;
+                        roomAvailable = false;
+                        return true;
+                    }
+            return false;
         }
 
-        int largeCheck(Room objarr[])
+        void checkIn(Room room[])
         {
-            int i = 0;
-            int found = 0;
-            while(i < 100 && found == 0)
-            {
-                if(objarr[i].iwantroomsize() == "large" && objarr[i].checkStatus() == 0)
-                {
-                    found = 1;
-                }
-                i++;
-            }
-            if(found == 0)
-            {
-                return 1;
-            }
-            else
-            {
-                return 0;
-            }
-        }
-
-    int comfortCheck(Room objarr[])
-    {
-        int i = 0;
-        int found = 0;
-        while(i < 100 && found == 0)
-        {
-            if(objarr[i].iwantroomtype() == "comfort" && objarr[i].checkStatus() == 0)
-            {
-                found = 1;
-            }
-            i++;
-        }
-        if(found == 0)
-        {
-            return 1;
-        }
-        else
-        {
-            return 0;
-        }
-    }
-
-
-    int deluxeCheck(Room objarr[])
-    {
-        int i = 0;
-        int found = 0;
-        while(i < 100 && found == 0)
-        {
-            if(objarr[i].iwantroomtype() == "deluxe" && objarr[i].checkStatus() == 0)
-            {
-                found = 1;
-            }
-            i++;
-        }
-        if(found == 0)
-        {
-            return 1;
-        }
-        else
-        {
-            return 0;
-        }
-    }
-
-
-    int premiumCheck(Room objarr[])
-    {
-        int i = 0;
-        int found = 0;
-        while(i < 100 && found == 0)
-        {
-            if(objarr[i].iwantroomtype() == "premium" && objarr[i].checkStatus() == 0)
-            {
-                found = 1;
-            }
-            i++;
-        }
-        if(found == 0)
-        {
-            return 1;
-        }
-        else
-        {
-            return 0;
-        }
-    }
-        void checkin(Room objarr[]) //if multiple peeps come together but they want diff rooms then they are considered seperate guests.
-        {
-
-            string rumsize;
-            int ihavefoundroom = 0;
-            int check1;
-            int check2;
-            int check3;
-            string rumtype;
-            int airconditioner;
-            double rs, rt, ra;
-
+            string finalRoomSize;
+            bool roomAvailability = true, validInputRoomSize, validInputRoomType, validInputAC;
+            string finalRoomType;
+            int airConditionerPresent;
+            double rSize, rType;
+            double totalRentPerDay;
 
             cout<<"Small comfort AC      : Rs. 3000"<<endl;
             cout<<"Small comfort Non-AC  : Rs. 2000"<<endl;
@@ -633,562 +463,364 @@ class Guest_in_room : public Room
             cout<<endl;
             do
             {
-                check1=0;
+                validInputRoomSize=0;
                 cout<<"Enter Room size (small / medium / large) : ";
-                cin>>rumsize;
+                cin>>finalRoomSize;
 
-
-                if(rumsize == "small")
+                if(finalRoomSize == "small")
                 {
-                    rs = 1;
+                    rSize = 1;
                 }
-                else if(rumsize == "medium")
+                else if(finalRoomSize == "medium")
                 {
-                    rs = 1.5;
+                    rSize = 1.5;
                 }
-                else if(rumsize == "large")
+                else if(finalRoomSize == "large")
                 {
-                    rs = 2;
+                    rSize = 2;
                 }
-                else if(rumsize != "small" && rumsize != "medium" && rumsize != "large")
+                else if(finalRoomSize != "small" && finalRoomSize != "medium" && finalRoomSize != "large")
                 {
-                    check1 = 1;
+                    validInputRoomSize = 1;
                     cout<<endl;
                     cout<<"Invalid input"<<endl;
                     cout<<endl;
                 }
-            }while(check1 == 1);
+            }while(validInputRoomSize == 1);
             do
             {
-                check2=0;
+                validInputRoomType=0;
                 cout<<"Enter Room Type (comfort / deluxe / premium) : ";
-                cin>>rumtype;
+                cin>>finalRoomType;
 
 
-                if(rumtype == "comfort")
+                if(finalRoomType == "comfort")
                 {
-                    rt = 1;
+                    rType = 1;
                 }
-                else if(rumtype == "deluxe")
+                else if(finalRoomType == "deluxe")
                 {
-                    rt = 1.5;
+                    rType = 1.5;
                 }
-                else if(rumtype == "premium")
+                else if(finalRoomType == "premium")
                 {
-                    rt = 2;
+                    rType = 2;
                 }
-                else if(rumtype != "comfort" && rumtype != "deluxe" && rumtype != "premium")
+                else if(finalRoomType != "comfort" && finalRoomType != "deluxe" && finalRoomType != "premium")
                 {
-                    check2 = 1;
+                    validInputRoomType = 1;
                     cout<<endl;
                     cout<<"Invalid input"<<endl;
                     cout<<endl;
                 }
-            }while(check2 == 1);
-
-            int check8 = 7;
+            }while(validInputRoomType == 1);
 
             do
             {
-                check3=0;
-                if(rumtype == "comfort" || rumtype == "deluxe")
+                validInputAC=0;
+                if(finalRoomType == "comfort" || finalRoomType == "deluxe")
                 {
                         cout<<"Do you want AC ? (0 : Non-AC / 1 : AC) : ";
-                        cin>>airconditioner;
+                        cin>>airConditionerPresent;
                 }
 
-                if(rumtype == "premium")
+                if(finalRoomType == "premium")
                 {
-                    airconditioner = 1;
+                    airConditionerPresent = 1;
                 }
-
-                if(airconditioner == 0)
-                {
-                    ra = 0;
-                    check8 = 0;
-                }
-                else if(airconditioner == 1)
-                {
-                    ra = 1;
-                    check8 = 0;
-                }
-                else if(check8 == 7)
-                {
-                    check8 = 1;
+                if(airConditionerPresent!=0 && airConditionerPresent!=1){
                     cout<<endl;
                     cout<<"Invalid input"<<endl;
                     cout<<endl;
                 }
-            }while(check8 == 7);
-            double total1;
-            total1 = calc_total(rs, rt, ra);
-            cout<<"Room cost per day = "<<total1<<endl;
+            }while(airConditionerPresent!=0 && airConditionerPresent!=1);
 
+            totalRentPerDay = calculateTotal(rSize, rType, airConditionerPresent);
+            cout<<"Room cost per day = "<<totalRentPerDay<<endl;
 
-            if(rumsize == "small"  && rumtype == "comfort" && airconditioner == 1)
+            if(finalRoomSize == "small"  && finalRoomType == "comfort" && airConditionerPresent == 1)
             {
-                for(int i=0; i<=19; i++)
+                for(int roomNumberCount=0; roomNumberCount<=19; roomNumberCount++)
                 {
-                    if(objarr[i].checkStatus() == 0)
-                    {
-                        objarr[i].changeStatus();
-                        objarr[i].createGuest(total1);
+                    bool isCheckInPossible = checkAndAllocateRoom(room[roomNumberCount],totalRentPerDay,roomAvailability);
+                    if(isCheckInPossible == true){
                         count111--;
-                        id = objarr[i].get_rno();
-                        cout<<"Room number "<<id<<" alloted"<<endl;
-                        cout<<"We hope you have a pleasant stay"<<endl;
-                        ihavefoundroom = 1;
-                        break;
-
-                    }
+                            break;
+                        }
                 }
-                if(ihavefoundroom == 0)
-                {
-                    cout<<endl;
-                    cout<<"Sorry, your Desired Room is unavailable"<<endl;
-                    cout<<"Please try some different type of room"<<endl;
-                    cout<<endl;
-                }
-
+                roomUnavailableMessage(roomAvailability);
             }
-            else if(rumsize == "small"  && rumtype == "comfort" && airconditioner == 0)
+            else if(finalRoomSize == "small"  && finalRoomType == "comfort" && airConditionerPresent == 0)
             {
-                for(int i=20; i<=29; i++)
+                for(int roomNumberCount=20; roomNumberCount<=29; roomNumberCount++)
                 {
-                    if(objarr[i].checkStatus() == 0)
-                    {
-                        objarr[i].changeStatus();
-                        objarr[i].createGuest(total1);
+                    bool isCheckInPossible = checkAndAllocateRoom(room[roomNumberCount],totalRentPerDay,roomAvailability);
+                    if(isCheckInPossible == true){
                         count110--;
-                        id = objarr[i].get_rno();
-                        cout<<"Room number "<<id<<" alloted"<<endl;
-                        cout<<"We hope you have a pleasant stay"<<endl;
-                        ihavefoundroom = 1;
-                        break;
-
-                    }
+                            break;
+                        }
                 }
-                if(ihavefoundroom == 0)
-                {
-                    cout<<endl;
-                    cout<<"Sorry, your Desired Room is unavailable"<<endl;
-                    cout<<"Please try some different type of room"<<endl;
-                    cout<<endl;
-                }
+                roomUnavailableMessage(roomAvailability);
             }
-            else if(rumsize == "small"  && rumtype == "deluxe" && airconditioner == 1)
+            else if(finalRoomSize == "small"  && finalRoomType == "deluxe" && airConditionerPresent == 1)
             {
-                for(int i=30; i<=39; i++)
+                for(int roomNumberCount=30; roomNumberCount<=39; roomNumberCount++)
                 {
-                    if(objarr[i].checkStatus() == 0)
-                    {
-                        objarr[i].changeStatus();
-                        objarr[i].createGuest(total1);
-                        count121--;
-                        id = objarr[i].get_rno();
-                        cout<<"Room number "<<id<<" alloted"<<endl;
-                        cout<<"We hope you have a pleasant stay"<<endl;
-                        ihavefoundroom = 1;
-                        break;
-
-                    }
+                    bool isCheckInPossible = checkAndAllocateRoom(room[roomNumberCount],totalRentPerDay,roomAvailability);
+                    if(isCheckInPossible == true){
+                            count121--;
+                            break;
+                        }
                 }
-                if(ihavefoundroom == 0)
-                {
-                    cout<<endl;
-                    cout<<"Sorry, your Desired Room is unavailable"<<endl;
-                    cout<<"Please try some different type of room"<<endl;
-                    cout<<endl;
-                }
+                roomUnavailableMessage(roomAvailability);
             }
-            else if(rumsize == "small"  && rumtype == "deluxe" && airconditioner == 0)
+            else if(finalRoomSize == "small"  && finalRoomType == "deluxe" && airConditionerPresent == 0)
             {
-                for(int i=40; i<=44; i++)
+                for(int roomNumberCount=40; roomNumberCount<=44; roomNumberCount++)
                 {
-                    if(objarr[i].checkStatus() == 0)
-                    {
-                        objarr[i].changeStatus();
-                        objarr[i].createGuest(total1);
+                    bool isCheckInPossible = checkAndAllocateRoom(room[roomNumberCount],totalRentPerDay,roomAvailability);
+                    if(isCheckInPossible == true){
                         count120--;
-                        id = objarr[i].get_rno();
-                        cout<<"Room number "<<id<<" alloted"<<endl;
-                        cout<<"We hope you have a pleasant stay"<<endl;
-                        ihavefoundroom = 1;
-                        break;
-                    }
+                            break;
+                        }
                 }
-                if(ihavefoundroom == 0)
-                {
-                    cout<<endl;
-                    cout<<"Sorry, your Desired Room is unavailable"<<endl;
-                    cout<<"Please try some different type of room"<<endl;
-                    cout<<endl;
-                }
+                roomUnavailableMessage(roomAvailability);
             }
-            else if(rumsize == "small"  && rumtype == "premium" )
+            else if(finalRoomSize == "small"  && finalRoomType == "premium" )
             {
-                for(int i=45; i<=49; i++)
+                for(int roomNumberCount=45; roomNumberCount<=49; roomNumberCount++)
                 {
-                    if(objarr[i].checkStatus() == 0)
-                    {
-                        objarr[i].changeStatus();
-                        objarr[i].createGuest(total1);
+                    bool isCheckInPossible = checkAndAllocateRoom(room[roomNumberCount],totalRentPerDay,roomAvailability);
+                    if(isCheckInPossible == true){
                         count131--;
-                        id = objarr[i].get_rno();
-                        cout<<"Room number "<<id<<" alloted"<<endl;
-                        cout<<"We hope you have a pleasant stay"<<endl;
-                        ihavefoundroom = 1;
-                        break;
-                    }
+                            break;
+                        }
                 }
-                if(ihavefoundroom == 0)
-                {
-                    cout<<endl;
-                    cout<<"Sorry, your Desired Room is unavailable"<<endl;
-                    cout<<"Please try some different type of room"<<endl;
-                    cout<<endl;
-                }
+                roomUnavailableMessage(roomAvailability);
             }
-            else if(rumsize == "medium"  && rumtype == "comfort" && airconditioner == 1)
+            else if(finalRoomSize == "medium"  && finalRoomType == "comfort" && airConditionerPresent == 1)
             {
-                for(int i=50; i<=59; i++)
+                for(int roomNumberCount=50; roomNumberCount<=59; roomNumberCount++)
                 {
-                    if(objarr[i].checkStatus() == 0)
-                    {
-                        objarr[i].changeStatus();
-                        objarr[i].createGuest(total1);
+                    bool isCheckInPossible = checkAndAllocateRoom(room[roomNumberCount],totalRentPerDay,roomAvailability);
+                    if(isCheckInPossible == true){
                         count211--;
-                        id = objarr[i].get_rno();
-                        cout<<"Room number "<<id<<" alloted"<<endl;
-                        cout<<"We hope you have a pleasant stay"<<endl;
-                        ihavefoundroom = 1;
-                        break;
-                    }
+                            break;
+                        }
                 }
-                if(ihavefoundroom == 0)
-                {
-                    cout<<endl;
-                    cout<<"Sorry, your Desired Room is unavailable"<<endl;
-                    cout<<"Please try some different type of room"<<endl;
-                    cout<<endl;
-                }
+                roomUnavailableMessage(roomAvailability);
             }
-            else if(rumsize == "medium"  && rumtype == "comfort" && airconditioner == 0)
+            else if(finalRoomSize == "medium"  && finalRoomType == "comfort" && airConditionerPresent == 0)
             {
-                for(int i=60; i<=64; i++)
+                for(int roomNumberCount=60; roomNumberCount<=64; roomNumberCount++)
                 {
-                    if(objarr[i].checkStatus() == 0)
-                    {
-                        objarr[i].changeStatus();
-                        objarr[i].createGuest(total1);
+                    bool isCheckInPossible = checkAndAllocateRoom(room[roomNumberCount],totalRentPerDay,roomAvailability);
+                    if(isCheckInPossible == true){
                         count210--;
-                        id = objarr[i].get_rno();
-                        cout<<"Room number "<<id<<" alloted"<<endl;
-                        cout<<"We hope you have a pleasant stay"<<endl;
-                        ihavefoundroom = 1;
-                        break;
-                    }
+                            break;
+                        }
                 }
-                if(ihavefoundroom == 0)
-                {
-                    cout<<endl;
-                    cout<<"Sorry, your Desired Room is unavailable"<<endl;
-                    cout<<"Please try some different type of room"<<endl;
-                    cout<<endl;
-                }
+                if(roomAvailability == 0)
+                roomUnavailableMessage(roomAvailability);
             }
-            else if(rumsize == "medium"  && rumtype == "deluxe" && airconditioner == 1)
+            else if(finalRoomSize == "medium"  && finalRoomType == "deluxe" && airConditionerPresent == 1)
             {
-                for(int i=65; i<=69; i++)
+                for(int roomNumberCount=65; roomNumberCount<=69; roomNumberCount++)
                 {
-                    if(objarr[i].checkStatus() == 0)
-                    {
-                        objarr[i].changeStatus();
-                        objarr[i].createGuest(total1);
+                    bool isCheckInPossible = checkAndAllocateRoom(room[roomNumberCount],totalRentPerDay,roomAvailability);
+                    if(isCheckInPossible == true){
                         count221--;
-                        id = objarr[i].get_rno();
-                        cout<<"Room number "<<id<<" alloted"<<endl;
-                        cout<<"We hope you have a pleasant stay"<<endl;
-                        ihavefoundroom = 1;
-                        break;
-                    }
+                            break;
+                        }
                 }
-                if(ihavefoundroom == 0)
-                {
-                    cout<<endl;
-                    cout<<"Sorry, your Desired Room is unavailable"<<endl;
-                    cout<<"Please try some different type of room"<<endl;
-                    cout<<endl;
-                }
+                roomUnavailableMessage(roomAvailability);
             }
-            else if(rumsize == "medium"  && rumtype == "deluxe" && airconditioner == 0)
+            else if(finalRoomSize == "medium"  && finalRoomType == "deluxe" && airConditionerPresent == 0)
             {
-                for(int i=70; i<=74; i++)
+                for(int roomNumberCount=70; roomNumberCount<=74; roomNumberCount++)
                 {
-                    if(objarr[i].checkStatus() == 0)
-                    {
-                        objarr[i].changeStatus();
-                        objarr[i].createGuest(total1);
+                    bool isCheckInPossible = checkAndAllocateRoom(room[roomNumberCount],totalRentPerDay,roomAvailability);
+                    if(isCheckInPossible == true){
                         count220--;
-                        id = objarr[i].get_rno();
-                        cout<<"Room number "<<id<<" alloted"<<endl;
-                        cout<<"We hope you have a pleasant stay"<<endl;
-                        ihavefoundroom = 1;
-                        break;
-                    }
+                            break;
+                        }
                 }
-                if(ihavefoundroom == 0)
-                {
-                    cout<<endl;
-                    cout<<"Sorry, your Desired Room is unavailable"<<endl;
-                    cout<<"Please try some different type of room"<<endl;
-                    cout<<endl;
-                }
+                roomUnavailableMessage(roomAvailability);
             }
-            else if(rumsize == "medium"  && rumtype == "premium" )
+            else if(finalRoomSize == "medium"  && finalRoomType == "premium" )
             {
-                for(int i=75; i<=79; i++)
+                for(int roomNumberCount=75; roomNumberCount<=79; roomNumberCount++)
                 {
-                    if(objarr[i].checkStatus() == 0)
-                    {
-                        objarr[i].changeStatus();
-                        objarr[i].createGuest(total1);
+                    bool isCheckInPossible = checkAndAllocateRoom(room[roomNumberCount],totalRentPerDay,roomAvailability);
+                    if(isCheckInPossible == true){
                         count231--;
-                        id = objarr[i].get_rno();
-                        cout<<"Room number "<<id<<" alloted"<<endl;
-                        cout<<"We hope you have a pleasant stay"<<endl;
-                        ihavefoundroom = 1;
-                        break;
-                    }
+                            break;
+                        }
                 }
-                if(ihavefoundroom == 0)
-                {
-                    cout<<endl;
-                    cout<<"Sorry, your Desired Room is unavailable"<<endl;
-                    cout<<"Please try some different type of room"<<endl;
-                    cout<<endl;
-                }
+                roomUnavailableMessage(roomAvailability);
             }
-            else if(rumsize == "large"  && rumtype == "comfort" && airconditioner == 1)
+            else if(finalRoomSize == "large"  && finalRoomType == "comfort" && airConditionerPresent == 1)
             {
-                for(int i=80; i<=84; i++)
+                for(int roomNumberCount=80; roomNumberCount<=84; roomNumberCount++)
                 {
-                    if(objarr[i].checkStatus() == 0)
-                    {
-                        objarr[i].changeStatus();
-                        objarr[i].createGuest(total1);
+                    bool isCheckInPossible = checkAndAllocateRoom(room[roomNumberCount],totalRentPerDay,roomAvailability);
+                    if(isCheckInPossible == true){
                         count311--;
-                        id = objarr[i].get_rno();
-                        cout<<"Room number "<<id<<" alloted"<<endl;
-                        cout<<"We hope you have a pleasant stay"<<endl;
-                        ihavefoundroom = 1;
-                        break;
-                    }
+                            break;
+                        }
                 }
-                if(ihavefoundroom == 0)
-                {
-                    cout<<endl;
-                    cout<<"Sorry, your Desired Room is unavailable"<<endl;
-                    cout<<"Please try some different type of room"<<endl;
-                    cout<<endl;
-                }
+                roomUnavailableMessage(roomAvailability);
             }
-            else if(rumsize == "large"  && rumtype == "comfort" && airconditioner == 0)
+            else if(finalRoomSize == "large"  && finalRoomType == "comfort" && airConditionerPresent == 0)
             {
-                for(int i=85; i<=89; i++)
+                for(int roomNumberCount=85; roomNumberCount<=89; roomNumberCount++)
                 {
-                    if(objarr[i].checkStatus() == 0)
-                    {
-                        objarr[i].changeStatus();
-                        objarr[i].createGuest(total1);
+                    bool isCheckInPossible = checkAndAllocateRoom(room[roomNumberCount],totalRentPerDay,roomAvailability);
+                    if(isCheckInPossible == true){
                         count310--;
-                        id = objarr[i].get_rno();
-                        cout<<"Room number "<<id<<" alloted"<<endl;
-                        cout<<"We hope you have a pleasant stay"<<endl;
-                        ihavefoundroom = 1;
-                        break;
-                    }
+                            break;
+                        }
                 }
-                if(ihavefoundroom == 0)
-                {
-                    cout<<endl;
-                    cout<<"Sorry, your Desired Room is unavailable"<<endl;
-                    cout<<"Please try some different type of room"<<endl;
-                    cout<<endl;
-                }
+                roomUnavailableMessage(roomAvailability);
             }
-            else if(rumsize == "large"  && rumtype == "deluxe" && airconditioner == 1)
+            else if(finalRoomSize == "large"  && finalRoomType == "deluxe" && airConditionerPresent == 1)
             {
-                for(int i=90; i<=92; i++)
+                for(int roomNumberCount=90; roomNumberCount<=92; roomNumberCount++)
                 {
-                    if(objarr[i].checkStatus() == 0)
-                    {
-                        objarr[i].changeStatus();
-                        objarr[i].createGuest(total1);
+                    bool isCheckInPossible = checkAndAllocateRoom(room[roomNumberCount],totalRentPerDay,roomAvailability);
+                    if(isCheckInPossible == true){
                         count321--;
-                        id = objarr[i].get_rno();
-                        cout<<"Room number "<<id<<" alloted"<<endl;
-                        cout<<"We hope you have a pleasant stay"<<endl;
-                        ihavefoundroom = 1;
-                        break;
-                    }
+                            break;
+                        }
                 }
-                if(ihavefoundroom == 0)
-                {
-                    cout<<endl;
-                    cout<<"Sorry, your Desired Room is unavailable"<<endl;
-                    cout<<"Please try some different type of room"<<endl;
-                    cout<<endl;
-                }
+                roomUnavailableMessage(roomAvailability);
             }
-            else if(rumsize == "large"  && rumtype == "deluxe" && airconditioner == 0)
+            else if(finalRoomSize == "large"  && finalRoomType == "deluxe" && airConditionerPresent == 0)
             {
-                for(int i=93; i<=94; i++)
+                for(int roomNumberCount=93; roomNumberCount<=94; roomNumberCount++)
                 {
-                    if(objarr[i].checkStatus() == 0)
-                    {
-                        objarr[i].changeStatus();
-                        objarr[i].createGuest(total1);
+                    bool isCheckInPossible = checkAndAllocateRoom(room[roomNumberCount],totalRentPerDay,roomAvailability);
+                    if(isCheckInPossible == true){
                         count320--;
-                        id = objarr[i].get_rno();
-                        cout<<"Room number "<<id<<" alloted"<<endl;
-                        cout<<"We hope you have a pleasant stay"<<endl;
-                        ihavefoundroom = 1;
-                        break;
-                    }
+                            break;
+                        }
                 }
-                if(ihavefoundroom == 0)
-                {
-                    cout<<endl;
-                    cout<<"Sorry, your Desired Room is unavailable"<<endl;
-                    cout<<"Please try some different type of room"<<endl;
-                    cout<<endl;
-                }
+                roomUnavailableMessage(roomAvailability);
             }
-            else if(rumsize == "large"  && rumtype == "premium" )
+            else if(finalRoomSize == "large"  && finalRoomType == "premium" )
             {
-                for(int i=95; i<=99; i++)
+                for(int roomNumberCount=95; roomNumberCount<=99; roomNumberCount++)
                 {
-                    if(objarr[i].checkStatus() == 0)
-                    {
-                        objarr[i].changeStatus();
-                        objarr[i].createGuest(total1);
+                    bool isCheckInPossible = checkAndAllocateRoom(room[roomNumberCount],totalRentPerDay,roomAvailability);
+                    if(isCheckInPossible == true){
                         count331--;
-                        id = objarr[i].get_rno();
-                        cout<<"Room number "<<id<<" alloted"<<endl;
-                        cout<<"We hope you have a pleasant stay"<<endl;
-                        ihavefoundroom = 1;
-                        break;
-                    }
+                            break;
+                        }
                 }
-                if(ihavefoundroom == 0)
-                {
-                    cout<<endl;
-                    cout<<"Sorry, your Desired Room is unavailable"<<endl;
-                    cout<<"Please try some different type of room"<<endl;
-                    cout<<endl;
-                }
+                roomUnavailableMessage(roomAvailability);
             }
             else
             {
                 cout<<"Invalid Input"<<endl;
             }
-
         }
 
 
-        void checkout(Room objarr[])
+        void checkOut(Room room[])
         {
-            int gid;
+            int guestId;
             cout<<"Enter guest ID : ";
-            cin>>gid;
-            int check7 = 0;
-            for(int i=0;i<100;i++)
+            cin>>guestId;
+            bool isValidGuestId = false;
+            for(int roomNumberCount=0;roomNumberCount<100;roomNumberCount++)
             {
-                if(objarr[i].get_rno() == gid && objarr[i].checkStatus() == 1)
+                if(room[roomNumberCount].getRoomNumber() == guestId && room[roomNumberCount].checkRoomStatus() == 1)
                 {
-                    int j = objarr[i].get_total();
-                    int d = objarr[i].get_number_of_days();
-                    int p = objarr[i].get_adv_pay();
-                    int f = objarr[i].return_food_cost();
-                    cout<<"Number of days stayed  : "<<d<<endl;
-                    cout<<"Room cost per day      : "<<j<<endl;
-                    cout<<"Total cost of stay     : "<<(j*d)<<endl;
-                    cout<<"Food Cost              : "<<f<<endl;
-                    cout<<"Advance Paid           : "<<p<<endl;
-                    cout<<"Payable Amount         : "<<(j * d) - p + f<<endl;
-                    objarr[i].rcheckout();
-                    objarr[i].clear_food_cost();
-                    string rumsize = objarr[i].iwantroomsize();
-                    string rumtype = objarr[i].iwantroomtype();
-                    int airconditioner = objarr[i].iwantac();
+                    int costPerDay = room[roomNumberCount].getRoomTotal();
+                    int DaysOfStay = room[roomNumberCount].getNumberOfDays();
+                    int guestPhoneNumber = room[roomNumberCount].getAdvancePayment();
+                    int netTotalFoodCost = room[roomNumberCount].getFoodCost();
+                    cout<<"Number of days stayed  : "<<DaysOfStay<<endl;
+                    cout<<"Room cost per day      : "<<costPerDay<<endl;
+                    cout<<"Total cost of stay     : "<<(costPerDay*DaysOfStay)<<endl;
+                    cout<<"Food Cost              : "<<netTotalFoodCost<<endl;
+                    cout<<"Advance Paid           : "<<guestPhoneNumber<<endl;
+                    cout<<"Payable Amount         : "<<(costPerDay * DaysOfStay) - guestPhoneNumber + netTotalFoodCost<<endl;
+                    room[roomNumberCount].roomCheckOut();
+                    room[roomNumberCount].clearFoodCost();
+                    string finalRoomSize = room[roomNumberCount].getRoomSize();
+                    string finalRoomType = room[roomNumberCount].getRoomType();
+                    int airConditionerPresent = room[roomNumberCount].getACStatus();
 
-                    if(rumsize == "small"  && rumtype == "comfort" && airconditioner == 1)
-                    {
-                        count111++;
+                    if(finalRoomSize == "small"){
+                        if(finalRoomType == "comfort"){
+                            if(airConditionerPresent == 1){
+                                count111++;
+                            }
+                            else{
+                                count110++;
+                            }
+                        }
+                        else if(finalRoomType == "deluxe"){
+                            if(airConditionerPresent == 1){
+                                count121++;
+                            }
+                            else{
+                                count120++;
+                            }
+                        }
+                        else if(finalRoomType == "premium"){
+                            count131++;
+                        }
                     }
-                    else if(rumsize == "small"  && rumtype == "comfort" && airconditioner == 0)
-                    {
-                        count110++;
+                    else if(finalRoomSize == "medium"){
+                        if(finalRoomType == "comfort"){
+                            if(airConditionerPresent == 1){
+                                count211++;
+                            }
+                            else{
+                                count210++;
+                            }
+                        }
+                        else if(finalRoomType == "deluxe"){
+                            if(airConditionerPresent == 1){
+                                count221++;
+                            }
+                            else{
+                                count220++;
+                            }
+                        }
+                        else if(finalRoomType == "premium"){
+                            count231++;
+                        }
                     }
-                    else if(rumsize == "small"  && rumtype == "deluxe" && airconditioner == 1)
-                    {
-                        count121++;
-                    }
-                    else if(rumsize == "small"  && rumtype == "deluxe" && airconditioner == 0)
-                    {
-                        count120++;
-                    }
-                    else if(rumsize == "small"  && rumtype == "premium" )
-                    {
-                        count131++;
-                    }
-                    else if(rumsize == "medium"  && rumtype == "comfort" && airconditioner == 1)
-                    {
-                        count211++;
-                    }
-                    else if(rumsize == "medium"  && rumtype == "comfort" && airconditioner == 0)
-                    {
-                        count210++;
-                    }
-                    else if(rumsize == "medium"  && rumtype == "deluxe" && airconditioner == 1)
-                    {
-                        count221++;
-                    }
-                    else if(rumsize == "medium"  && rumtype == "deluxe" && airconditioner == 0)
-                    {
-                        count220++;
-                    }
-                    else if(rumsize == "medium"  && rumtype == "premium" )
-                    {
-                        count231++;
-                    }
-                    else if(rumsize == "large"  && rumtype == "comfort" && airconditioner == 1)
-                    {
-                        count311++;
-                    }
-                    else if(rumsize == "large"  && rumtype == "comfort" && airconditioner == 0)
-                    {
-                        count310++;
-                    }
-                    else if(rumsize == "large"  && rumtype == "deluxe" && airconditioner == 1)
-                    {
-                        count321++;
-                    }
-                    else if(rumsize == "large"  && rumtype == "deluxe" && airconditioner == 0)
-                    {
-                        count320++;
-                    }
-                    else if(rumsize == "large"  && rumtype == "premium" )
-                    {
-                        count331++;
+                    else if(finalRoomSize == "large"){
+                        if(finalRoomType == "comfort"){
+                            if(airConditionerPresent == 1){
+                                count311++;
+                            }
+                            else{
+                                count310++;
+                            }
+                        }
+                        else if(finalRoomType == "deluxe"){
+                            if(airConditionerPresent == 1){
+                                count321++;
+                            }
+                            else{
+                                count320++;
+                            }
+                        }
+                        else if(finalRoomType == "premium"){
+                            count331++;
+                        }
                     }
 
-                    check7 = 1;
+                    isValidGuestId = true;
                     break;
                 }
             }
-            if(check7 == 1)
+            if(isValidGuestId == true)
             {
             cout<<endl;
             cout<<"Check Out Successful"<<endl;
@@ -1204,62 +836,52 @@ class Guest_in_room : public Room
             }
         }
 
-        void summary(Room objarr[])
+        void showGuestDetails(Room room[])
         {
-            int ihavefoundguest = 0,gid;
+            bool isValidGuest = false, guestId;
             cout<<"Enter guest ID : ";
-            cin>>gid;
-            for(int i=0;i<100;i++)
+            cin>>guestId;
+            for(int roomNumberCount=0;roomNumberCount<100;roomNumberCount++)
             {
-                int q = objarr[i].get_rno();
-                int p = objarr[i].get_phone();
-                if(q == gid && p != 0)
+                int currentRoomNumber = room[roomNumberCount].getRoomNumber();
+                int guestPhoneNumber = room[roomNumberCount].getPhone();
+                if(currentRoomNumber == guestId && guestPhoneNumber != 0)
                 {
                     cout<<endl;
                     cout<<"GUEST DETAILS "<<endl<<endl;
-                    objarr[i].display();
-                    ihavefoundguest = 1;
+                    room[roomNumberCount].displayAllGuestDetails();
+                    isValidGuest = true;
                     break;
                 }
             }
 
-            if(ihavefoundguest == 0)
+            if(isValidGuest == false)
             {
                 cout<<endl<<"Guest not found !"<<endl<<endl;
             }
         }
 
 
-        void showroomstatus(Room objarr[])
+        void showRoomStatus(Room room[])
         {
-            for(int i=0;i<100;i++)
+            for(int roomNumberCount=0;roomNumberCount<100;roomNumberCount++)
             {
-                int n;
-                if(objarr[i].checkStatus()==0)
+                int currentRoomNo = room[roomNumberCount].getRoomNumber();
+                if(room[roomNumberCount].checkRoomStatus()==0)
                 {
-                    n=0;
+                cout<<"Room Number "<<currentRoomNo<<" : Available"<<endl;
                 }
                 else
                 {
-                    n=1;
-                }
-                if(n==0)
-                {
-                int k = objarr[i].get_rno();
-                cout<<"Room Number "<<k<<" : Available"<<endl;
-                }
-                else
-                {
-                int h = objarr[i].get_rno();
-                cout<<"Room Number "<<h<<" : Unavailable"<<endl;
+                cout<<"Room Number "<<currentRoomNo<<" : Unavailable"<<endl;
                 }
             }
         }
 
-        void countRooms(Room objarr[])
+        void availableRoomsCount(Room room[])
         {
             cout<<endl;
-            cout<<"Number of available rooms : "<<endl;
+            cout<<"Number of available room : "<<endl;
             cout<<endl;
 
             cout<<"Small comfort AC      : "<<count111<<endl;
@@ -1282,496 +904,355 @@ class Guest_in_room : public Room
 
 
 
-
-
-
-
-
-
-
-
-    int food_service(Room objarr[])
+    void foodService(Room room[])
     {
-    int x;
-    unordered_map<string,int>m;
-    unordered_map<string,int>::iterator it;
-    unordered_map<string,int>umm;
-    unordered_map<string,int>::iterator it2;
+    unordered_map<string,pair<int,int>>menuItem;
+    unordered_map<string,pair<int,int>>::iterator currentItem ;
+
+// Each Food Item is mapped wwith a pair of numbers where the first number represents the price of 1 item of that type and the second number represents the count of that item that the guest has bought.
+
+    menuItem["Banana Milkshake     "]={80,0};
+    menuItem["Bhel Puri            "]={25,0};
+    menuItem["Butter Naan          "]={35,0};
+    menuItem["Chat                 "]={20,0};
+    menuItem["Cheese Sandwich      "]={40,0};
+    menuItem["Cheese Grill Sandwich"]={80,0};
+    menuItem["Cheese Naan          "]={60,0};
+    menuItem["Chinese Bhel         "]={25,0};
+    menuItem["Dhokla               "]={25,0};
+    menuItem["Dahi Wada            "]={30,0};
+    menuItem["Dahi Puri            "]={30,0};
+    menuItem["Frooti               "]={10,0};
+    menuItem["Gulab Jamun          "]={20,0};
+    menuItem["Idli Sambar          "]={50,0};
+    menuItem["Jalebi               "]={40,0};
+    menuItem["Jeera Rice           "]={60,0};
+    menuItem["Kofta                "]={100,0};
+    menuItem["Lemon Tea            "]={50,0};
+    menuItem["Lime Juice           "]={50,0};
+    menuItem["Mango Milkshake      "]={70,0};
+    menuItem["Maaza                "]={20,0};
+    menuItem["Orange juice         "]={30,0};
+    menuItem["Pasta                "]={45,0};
+    menuItem["Paneer Tikka Masala  "]={100,0};
+    menuItem["Paneer Chilli        "]={90,0};
+    menuItem["Poha                 "]={25,0};
+    menuItem["Samosa pav           "]={17,0};
+    menuItem["Sada Dosa            "]={45,0};
+    menuItem["Schezwan Rice        "]={80,0};
+    menuItem["Tandoor Roti         "]={25,0};
+    menuItem["Vada pav             "]={16,0};
+    menuItem["Veg. Sandwich        "]={60,0};
 
 
-
-    umm["Banana Milkshake     "]=80;
-    umm["Bhel Puri            "]=25;
-    umm["Butter Naan          "]=35;
-    umm["Chat                 "]=20;
-    umm["Cheese Sandwich      "]=40;
-    umm["Cheese Grill Sandwich"]=80;
-    umm["Cheese Naan          "]=60;
-    umm["Chinese Bhel         "]=25;
-    umm["Dhokla               "]=25;
-    umm["Dahi Wada            "]=30;
-    umm["Dahi Puri            "]=30;
-    umm["Frooti               "]=10;
-    umm["Gulab Jamun          "]=20;
-    umm["Idli Sambar          "]=50;
-    umm["Jalebi               "]=40;
-    umm["Jeera Rice           "]=60;
-    umm["Kofta                "]=100;
-    umm["Lemon Tea            "]=50;
-    umm["Lime Juice           "]=50;
-    umm["Mango Milkshake      "]=70;
-    umm["Maaza                "]=20;
-    umm["Orange juice         "]=30;
-    umm["Pasta                "]=45;
-    umm["Paneer Tikka Masala  "]=100;
-    umm["Paneer Chilli        "]=90;
-    umm["Poha                 "]=25;
-    umm["Samosa pav           "]=17;
-    umm["Sada Dosa            "]=45;
-    umm["Schezwan Rice        "]=80;
-    umm["Tandoor Roti         "]=25;
-    umm["Vada pav             "]=16;
-    umm["Veg. Sandwich        "]=60;
-
-
-
-
-
-
-
-    m["Banana Milkshake     "]=0;
-    m["Bhel Puri            "]=0;
-    m["Butter Naan          "]=0;
-    m["Chat                 "]=0;
-    m["Cheese Sandwich      "]=0;
-    m["Cheese Grill Sandwich"]=0;
-    m["Cheese Naan          "]=0;
-    m["Chinese Bhel         "]=0;
-    m["Dhokla               "]=0;
-    m["Dahi Wada            "]=0;
-    m["Dahi Puri            "]=0;
-    m["Frooti               "]=0;
-    m["Gulab Jamun          "]=0;
-    m["Idli Sambar          "]=0;
-    m["Jalebi               "]=0;
-    m["Jeera Rice           "]=0;
-    m["Kofta                "]=0;
-    m["Lemon Tea            "]=0;
-    m["Lime Juice           "]=0;
-    m["Mango Milkshake      "]=0;
-    m["Maaza                "]=0;
-    m["Orange juice         "]=0;
-    m["Pasta                "]=0;
-    m["Paneer Tikka Masala  "]=0;
-    m["Paneer Chilli        "]=0;
-    m["Poha                 "]=0;
-    m["Samosa pav           "]=0;
-    m["Sada Dosa            "]=0;
-    m["Schezwan Rice        "]=0;
-    m["Tandoor Roti         "]=0;
-    m["Vada pav             "]=0;
-    m["Veg. Sandwich        "]=0;
-
-            long long total =0;
-            int gid;
-            system("cls");
+            int guestId;
+            clearScreen();
             cout<<"Enter guest ID : ";
-            cin>>gid;
-            int check11 = 0;
-            for(int i=0;i<100;i++)
+            cin>>guestId;
+            bool authenticateGuest = false;
+            for(int roomCount=0;roomCount<100;roomCount++)
             {
-                int p = objarr[i].get_phone();
+                int guestPhoneNumber = room[roomCount].getPhone();
 
-                if(objarr[i].get_rno() == gid && objarr[i].checkStatus() == 1 && p!=0)
+                if(room[roomCount].getRoomNumber() == guestId && room[roomCount].checkRoomStatus() == 1 && guestPhoneNumber!=0)
                 {
-                    objarr[i].get_food_cost(total);
-                    check11 = 1;
+                    authenticateGuest = true;
                 }
             }
-            if(check11 == 1)
+            if(authenticateGuest == true)
             {
-                system("cls");
+                clearScreen();
             }
-            if(check11 == 0)
-            {
+            else{
                 cout<<endl;
                 cout<<"Guest not found !"<<endl;
                 cout<<endl;
-                x = 0;
-                return x;
-
+                return;
             }
 
-
-
-                cout<<"Loading Menu Please wait.........."<<endl;
+    cout<<"Loading Menu Please wait.........."<<endl;
     this_thread::sleep_for(chrono::seconds(2));
 
     menu();
 
-
     cout<<"PLEASE SELECT YOUR ORDER FROM THE MENU"<<endl<<endl;
 
-
-    string s;
+    string inputMenuChoice;
     do{
     int quantity;
+    long long mostRecentTotal = 0;
     cout<<endl;
     cout<<"Press M to View Menu Again"<<endl;
     cout<<"Press C to check items in Your Cart"<<endl;
     cout<<"Press E to Finish the Order"<<endl;
-    cin>>s;
-    if(s=="C"){
-    system("cls");
-    check_order_contents(m,it,umm,it2);
+    cin>>inputMenuChoice;
+    if(inputMenuChoice=="C"){
+    clearScreen();
+    mostRecentTotal = showCurrentOrderList(menuItem,currentItem );
+    pauseScreen();
+    clearScreen();
     }
-    else if(s=="M"){
-    system("cls");
+    else if(inputMenuChoice=="M"){
+    clearScreen();
             menu();
     }
-    else if(s=="Banana Milkshake" || s=="banana milkshake" ||s=="Bananamilkshake" ||  s=="bananamilkshake" || s=="BananaMilkshake"){
+    else if(inputMenuChoice=="Banana Milkshake" || inputMenuChoice=="banana milkshake" ||inputMenuChoice=="Bananamilkshake" ||  inputMenuChoice=="bananamilkshake" || inputMenuChoice=="BananaMilkshake"){
         cout<<"Enter The Quantity : ";
         cin>>quantity;
-        m["Banana Milkshake     "]= m["Banana Milkshake     "]+quantity;
+        menuItem["Banana Milkshake     "].second = menuItem["Banana Milkshake     "].second +quantity;
     }
-    else if(s=="Bhel Puri" || s=="Bhelpuri"||s=="bhelpuri"||s=="BhelPuri"|| s=="bhel puri"){
+    else if(inputMenuChoice=="Bhel Puri" || inputMenuChoice=="Bhelpuri"||inputMenuChoice=="bhelpuri"||inputMenuChoice=="BhelPuri"|| inputMenuChoice=="bhel puri"){
         cout<<"Enter The Quantity : ";
         cin>>quantity;
-    m["Bhel Puri            "]= m["Bhel Puri            "]+quantity;
+    menuItem["Bhel Puri            "].second = menuItem["Bhel Puri            "].second +quantity;
     }
-    else if(s=="Butter Naan"|| s=="ButterNaan"|| s=="butternaan"||s=="butter naan"||s=="Butternaaan"){
+    else if(inputMenuChoice=="Butter Naan"|| inputMenuChoice=="ButterNaan"|| inputMenuChoice=="butternaan"||inputMenuChoice=="butter naan"||inputMenuChoice=="Butternaaan"){
         cout<<"Enter The Quantity : ";
         cin>>quantity;
-    m["Butter Naan          "]= m["Butter Naan          "]+quantity;
+    menuItem["Butter Naan          "].second = menuItem["Butter Naan          "].second +quantity;
     }
-    else if(s=="Chat" || s=="chat"){
+    else if(inputMenuChoice=="Chat" || inputMenuChoice=="chat"){
         cout<<"Enter The Quantity : ";
         cin>>quantity;
-    m["Chat                 "]= m["Chat                 "]+quantity;
+    menuItem["Chat                 "].second = menuItem["Chat                 "].second +quantity;
     }
-    else if(s=="Cheese Sandwich" || s=="Cheesesandwich" || s=="cheesesandwich" || s=="CheeseSandwich" || s=="cheese sandwich"){
+    else if(inputMenuChoice=="Cheese Sandwich" || inputMenuChoice=="Cheesesandwich" || inputMenuChoice=="cheesesandwich" || inputMenuChoice=="CheeseSandwich" || inputMenuChoice=="cheese sandwich"){
         cout<<"Enter The Quantity : ";
         cin>>quantity;
-    m["Cheese Sandwich      "]= m["Cheese Sandwich      "]+quantity;
+    menuItem["Cheese Sandwich      "].second = menuItem["Cheese Sandwich      "].second +quantity;
     }
-    else if(s=="Cheese Grill Sandwich" || s=="cheesegrillsandwich" || s=="CheeseGrillSandwich" || s=="Cheesegrillsandwich" || s=="cheese grill sandwich"){
+    else if(inputMenuChoice=="Cheese Grill Sandwich" || inputMenuChoice=="cheesegrillsandwich" || inputMenuChoice=="CheeseGrillSandwich" || inputMenuChoice=="Cheesegrillsandwich" || inputMenuChoice=="cheese grill sandwich"){
         cout<<"Enter The Quantity : ";
         cin>>quantity;
-    m["Cheese Grill Sandwich"]= m["Cheese Grill Sandwich"]+quantity;
+    menuItem["Cheese Grill Sandwich"].second = menuItem["Cheese Grill Sandwich"].second +quantity;
 
     }
-    else if(s=="cheese naan" || s=="Cheese Naan"|| s=="CheeseNaan" || s=="Cheesenaan" || s=="cheesenaan"){
+    else if(inputMenuChoice=="cheese naan" || inputMenuChoice=="Cheese Naan"|| inputMenuChoice=="CheeseNaan" || inputMenuChoice=="Cheesenaan" || inputMenuChoice=="cheesenaan"){
         cout<<"Enter The Quantity : ";
         cin>>quantity;
-    m["Cheese Naan          "]= m["Cheese Naan          "]+quantity;
+    menuItem["Cheese Naan          "].second = menuItem["Cheese Naan          "].second +quantity;
     }
-    else if(s=="Chinese Bhel" || s=="Chinesebhel"|| s=="chinese bhel" || s=="chinesebhel"||s=="ChineseBhel"){
+    else if(inputMenuChoice=="Chinese Bhel" || inputMenuChoice=="Chinesebhel"|| inputMenuChoice=="chinese bhel" || inputMenuChoice=="chinesebhel"||inputMenuChoice=="ChineseBhel"){
         cout<<"Enter The Quantity : ";
         cin>>quantity;
-    m["Chinese Bhel         "]= m["Chinese Bhel         "]+quantity;
+    menuItem["Chinese Bhel         "].second = menuItem["Chinese Bhel         "].second +quantity;
     }
-    else if(s=="Dhokla"||s=="dhokla"){
+    else if(inputMenuChoice=="Dhokla"||inputMenuChoice=="dhokla"){
         cout<<"Enter The Quantity : ";
         cin>>quantity;
-    m["Dhokla               "]= m["Dhokla               "]+quantity;
+    menuItem["Dhokla               "].second = menuItem["Dhokla               "].second +quantity;
     }
-    else if(s=="Dahi Wada"|| s=="dahiwada"||s=="DahiWada"||s=="Dahiwada"||s=="dahi wada"){
+    else if(inputMenuChoice=="Dahi Wada"|| inputMenuChoice=="dahiwada"||inputMenuChoice=="DahiWada"||inputMenuChoice=="Dahiwada"||inputMenuChoice=="dahi wada"){
         cout<<"Enter The Quantity : ";
         cin>>quantity;
-    m["Dahi Wada            "]= m["Dahi Wada            "]+quantity;
+    menuItem["Dahi Wada            "].second = menuItem["Dahi Wada            "].second +quantity;
     }
-    else if(s=="Dahi Puri"||s=="Dahipuri"||s=="DahiPuri"||s=="dahipuri"||s=="dahi puri"){
+    else if(inputMenuChoice=="Dahi Puri"||inputMenuChoice=="Dahipuri"||inputMenuChoice=="DahiPuri"||inputMenuChoice=="dahipuri"||inputMenuChoice=="dahi puri"){
         cout<<"Enter The Quantity : ";
         cin>>quantity;
-    m["Dahi Puri            "]= m["Dahi Puri            "]+quantity;
+    menuItem["Dahi Puri            "].second = menuItem["Dahi Puri            "].second +quantity;
     }
-    else if(s=="Frooti"||s=="frooti"){
+    else if(inputMenuChoice=="Frooti"||inputMenuChoice=="frooti"){
         cout<<"Enter The Quantity : ";
         cin>>quantity;
-    m["Frooti               "]= m["Frooti               "]+quantity;
+    menuItem["Frooti               "].second = menuItem["Frooti               "].second +quantity;
     }
-    else if(s=="Gulab Jamun"||s=="gulabjamun"||s=="GulabJamun"||s=="gulab jamun"||s=="Gulabjamun"){
+    else if(inputMenuChoice=="Gulab Jamun"||inputMenuChoice=="gulabjamun"||inputMenuChoice=="GulabJamun"||inputMenuChoice=="gulab jamun"||inputMenuChoice=="Gulabjamun"){
         cout<<"Enter The Quantity : ";
         cin>>quantity;
-    m["Gulab Jamun          "]= m["Gulab Jamun          "]+quantity;
+    menuItem["Gulab Jamun          "].second = menuItem["Gulab Jamun          "].second +quantity;
     }
-    else if(s=="Idli Sambar"||s=="Idlisambar"||s=="idlisambar"||s=="IdliSambar"||s=="idli sambar"){
+    else if(inputMenuChoice=="Idli Sambar"||inputMenuChoice=="Idlisambar"||inputMenuChoice=="idlisambar"||inputMenuChoice=="IdliSambar"||inputMenuChoice=="idli sambar"){
         cout<<"Enter The Quantity : ";
         cin>>quantity;
-    m["Idli Sambar          "]= m["Idli Sambar          "]+quantity;
+    menuItem["Idli Sambar          "].second = menuItem["Idli Sambar          "].second +quantity;
     }
-    else if(s=="Jalebi"||s=="jalebi"){
+    else if(inputMenuChoice=="Jalebi"||inputMenuChoice=="jalebi"){
         cout<<"Enter The Quantity : ";
         cin>>quantity;
-    m["Jalebi               "]= m["Jalebi               "]+quantity;
+    menuItem["Jalebi               "].second = menuItem["Jalebi               "].second +quantity;
     }
-    else if(s=="Jeera Rice"||s=="JeeraRice"||s=="jeerarice"||s=="jeera rice"||s=="Jeerarice"){
+    else if(inputMenuChoice=="Jeera Rice"||inputMenuChoice=="JeeraRice"||inputMenuChoice=="jeerarice"||inputMenuChoice=="jeera rice"||inputMenuChoice=="Jeerarice"){
         cout<<"Enter The Quantity : ";
         cin>>quantity;
-    m["Jeera Rice           "]= m["Jeera Rice           "]+quantity;
+    menuItem["Jeera Rice           "].second = menuItem["Jeera Rice           "].second +quantity;
     }
-    else if(s=="Kofta"||s=="kofta"){
+    else if(inputMenuChoice=="Kofta"||inputMenuChoice=="kofta"){
         cout<<"Enter The Quantity : ";
         cin>>quantity;
-    m["Kofta                "]= m["Kofta                "]+quantity;
+    menuItem["Kofta                "].second = menuItem["Kofta                "].second +quantity;
     }
-    else if(s=="Lemon Tea"||s=="LemonTea"||s=="lemon tea"||s=="lemontea"||s=="Lemontea"){
+    else if(inputMenuChoice=="Lemon Tea"||inputMenuChoice=="LemonTea"||inputMenuChoice=="lemon tea"||inputMenuChoice=="lemontea"||inputMenuChoice=="Lemontea"){
         cout<<"Enter The Quantity : ";
         cin>>quantity;
-    m["Lemon Tea            "]= m["Lemon Tea            "]+quantity;
+    menuItem["Lemon Tea            "].second = menuItem["Lemon Tea            "].second +quantity;
     }
-    else if(s=="Lime Juice"||s=="limejuice"||s=="LimeJuice"||s=="Limejuice"||s=="lime juice"){
+    else if(inputMenuChoice=="Lime Juice"||inputMenuChoice=="limejuice"||inputMenuChoice=="LimeJuice"||inputMenuChoice=="Limejuice"||inputMenuChoice=="lime juice"){
         cout<<"Enter The Quantity : ";
         cin>>quantity;
-    m["Lime Juice           "]= m["Lime Juice           "]+quantity;
+    menuItem["Lime Juice           "].second = menuItem["Lime Juice           "].second +quantity;
     }
-    else if(s=="Mango Milkshake"||s=="MangoMilkshake"||s=="Mangomilkshake"||s=="mangomilkshake"||s=="mango milkshake"){
+    else if(inputMenuChoice=="Mango Milkshake"||inputMenuChoice=="MangoMilkshake"||inputMenuChoice=="Mangomilkshake"||inputMenuChoice=="mangomilkshake"||inputMenuChoice=="mango milkshake"){
         cout<<"Enter The Quantity : ";
         cin>>quantity;
-    m["Mango Milkshake      "]= m["Mango Milkshake      "]+quantity;
+    menuItem["Mango Milkshake      "].second = menuItem["Mango Milkshake      "].second +quantity;
     }
-    else if(s=="maaza"||s=="Maaza"){
+    else if(inputMenuChoice=="maaza"||inputMenuChoice=="Maaza"){
         cout<<"Enter The Quantity : ";
         cin>>quantity;
-    m["Maaza                "]= m["Maaza                "]+quantity;
+    menuItem["Maaza                "].second = menuItem["Maaza                "].second +quantity;
     }
-    else if(s=="OrangeJuice"||s=="Orange Juice"||s=="orangejuice"||s=="ornge juice"||s=="Orangejuice"){
+    else if(inputMenuChoice=="OrangeJuice"||inputMenuChoice=="Orange Juice"||inputMenuChoice=="orangejuice"||inputMenuChoice=="ornge juice"||inputMenuChoice=="Orangejuice"){
         cout<<"Enter The Quantity : ";
         cin>>quantity;
-    m["Orange juice         "]= m["Orange juice         "]+quantity;
+    menuItem["Orange juice         "].second = menuItem["Orange juice         "].second +quantity;
     }
-    else if(s=="Pasta"||s=="pasta"){
+    else if(inputMenuChoice=="Pasta"||inputMenuChoice=="pasta"){
         cout<<"Enter The Quantity : ";
         cin>>quantity;
-    m["Pasta                "]= m["Pasta                "]+quantity;
+    menuItem["Pasta                "].second = menuItem["Pasta                "].second +quantity;
     }
-    else if(s=="paneertikkamasala"||s=="Paneer Tikka Masala"||s=="paneer tikka masala"||s=="Paneertikkamasala"||s=="Paneer tikka masala"){
+    else if(inputMenuChoice=="paneertikkamasala"||inputMenuChoice=="Paneer Tikka Masala"||inputMenuChoice=="paneer tikka masala"||inputMenuChoice=="Paneertikkamasala"||inputMenuChoice=="Paneer tikka masala"){
         cout<<"Enter The Quantity : ";
         cin>>quantity;
-    m["Paneer Tikka Masala  "]= m["Paneer Tikka Masala  "]+quantity;
+    menuItem["Paneer Tikka Masala  "].second = menuItem["Paneer Tikka Masala  "].second +quantity;
     }
-    else if(s=="Paneer Chilli"||s=="PaneerChilli"||s=="paneerchilli"||s=="Paneerchilli"||s=="paneer chilli"){
+    else if(inputMenuChoice=="Paneer Chilli"||inputMenuChoice=="PaneerChilli"||inputMenuChoice=="paneerchilli"||inputMenuChoice=="Paneerchilli"||inputMenuChoice=="paneer chilli"){
         cout<<"Enter The Quantity : ";
         cin>>quantity;
-    m["Paneer Chilli        "]= m["Paneer Chilli        "]+quantity;
+    menuItem["Paneer Chilli        "].second = menuItem["Paneer Chilli        "].second +quantity;
     }
-    else if(s=="Poha"||s=="poha"){
+    else if(inputMenuChoice=="Poha"||inputMenuChoice=="poha"){
         cout<<"Enter The Quantity : ";
         cin>>quantity;
-    m["Poha                 "]= m["Poha                 "]+quantity;
+    menuItem["Poha                 "].second = menuItem["Poha                 "].second +quantity;
     }
-    else if(s=="Samosa Pav"||s=="samosapav"||s=="SamosaPav"||s=="Samosapav"||s=="samosa pav"){
+    else if(inputMenuChoice=="Samosa Pav"||inputMenuChoice=="samosapav"||inputMenuChoice=="SamosaPav"||inputMenuChoice=="Samosapav"||inputMenuChoice=="samosa pav"){
         cout<<"Enter The Quantity : ";
         cin>>quantity;
-    m["Samosa pav           "]= m["Samosa pav           "]+quantity;
+    menuItem["Samosa pav           "].second = menuItem["Samosa pav           "].second +quantity;
     }
-    else if(s=="Sadadosa"||s=="Sada Dosa"||s=="SadaDosa"||s=="sadadosa"||s=="sada dosa"){
+    else if(inputMenuChoice=="Sadadosa"||inputMenuChoice=="Sada Dosa"||inputMenuChoice=="SadaDosa"||inputMenuChoice=="sadadosa"||inputMenuChoice=="sada dosa"){
         cout<<"Enter The Quantity : ";
         cin>>quantity;
-    m["Sada Dosa            "]= m["Sada Dosa            "]+quantity;
+    menuItem["Sada Dosa            "].second = menuItem["Sada Dosa            "].second +quantity;
     }
-    else if(s=="Schezwan Rice"||s=="Schezwanrice"||s=="SchezwanRice"||s=="schezwanrice"||s=="schezwan rice"){
+    else if(inputMenuChoice=="Schezwan Rice"||inputMenuChoice=="Schezwanrice"||inputMenuChoice=="SchezwanRice"||inputMenuChoice=="schezwanrice"||inputMenuChoice=="schezwan rice"){
         cout<<"Enter The Quantity : ";
         cin>>quantity;
-    m["Schezwan Rice        "]= m["Schezwan Rice        "]+quantity;
+    menuItem["Schezwan Rice        "].second = menuItem["Schezwan Rice        "].second +quantity;
     }
-    else if(s=="Tandoori Roti"||s=="TandooriRoti"||s=="Tandooriroti"||s=="tandooriroti"||s=="tandoori roti"){
+    else if(inputMenuChoice=="Tandoori Roti"||inputMenuChoice=="TandooriRoti"||inputMenuChoice=="Tandooriroti"||inputMenuChoice=="tandooriroti"||inputMenuChoice=="tandoori roti"){
         cout<<"Enter The Quantity : ";
         cin>>quantity;
-    m["Tandoor Roti         "]= m["Tandoor Roti         "]+quantity;
+    menuItem["Tandoor Roti         "].second = menuItem["Tandoor Roti         "].second +quantity;
     }
-    else if(s=="Vada Pav"||s=="Vadapav"||s=="VadaPav"||s=="vadapav"||s=="vada pav"){
+    else if(inputMenuChoice=="Vada Pav"||inputMenuChoice=="Vadapav"||inputMenuChoice=="VadaPav"||inputMenuChoice=="vadapav"||inputMenuChoice=="vada pav"){
         cout<<"Enter The Quantity : ";
         cin>>quantity;
-    m["Vada pav             "]= m["Vada pav             "]+quantity;
+    menuItem["Vada pav             "].second = menuItem["Vada pav             "].second +quantity;
     }
-    else if(s=="VegSandwich"||s=="Vegsandwich"||s=="Veg Sandwich"||s=="vegsandwich"||s=="veg sandwich"){
+    else if(inputMenuChoice=="VegSandwich"||inputMenuChoice=="Vegsandwich"||inputMenuChoice=="Veg Sandwich"||inputMenuChoice=="vegsandwich"||inputMenuChoice=="veg sandwich"){
         cout<<"Enter The Quantity : ";
         cin>>quantity;
-    m["Veg. Sandwich        "]= m["Veg. Sandwich        "]+quantity;
+    menuItem["Veg. Sandwich        "].second = menuItem["Veg. Sandwich        "].second +quantity;
     }
     else{
         cout<<endl;
         cout<<"Invalid Input"<<endl;
         cout<<endl;
     }
-    }while(s!="E");
+    }while(inputMenuChoice!="E");
 
-
-
-     system("cls");
-
-
+     clearScreen();
     cout<<endl<<endl;
     cout<<"  YOUR ORDER : "<<endl;
-    cout<<"  ________________________________________________________________"<<endl<<endl;
-
-    cout<<"     ITEM NAME           QUANTITY         RATE       SUB TOTAL "<<endl;
-    cout<<"  ________________________________________________________________"<<endl<<endl;
-
-    for(it=m.begin(),it2=umm.begin();it!=m.end(),it2!=umm.end();++it,++it2){
-        if(it->second!=0){
-            total=total+(it->second)*(it2->second);
-            cout<<"   "<<it->first<<"     "<<it->second<<"             "<<it2->second<<"           "<<(it->second)*(it2->second)<<endl;
-        }
-    }
-    cout<<"  ________________________________________________________________"<<endl<<endl;
+    long long total = showCurrentOrderList(menuItem,currentItem );
     cout<<"                                                      TOTAL "<<endl;
     cout<<"                                               -------------------"<<endl;
-
     cout<<"                                                     Rs : "<<total<<endl;
     cout<<"                                               -------------------"<<endl;
-
-
-            x = 1;
-
-    for(int i=0;i<100;i++)
+    for(int currentRoomCounter=0;currentRoomCounter<100;currentRoomCounter++)
     {
-        int p = objarr[i].get_phone();
-
-        if(objarr[i].get_rno() == gid && objarr[i].checkStatus() == 1 && p!=0)
+        long long phoneNo = room[currentRoomCounter].getPhone();
+        if(room[currentRoomCounter].getRoomNumber() == guestId && room[currentRoomCounter].checkRoomStatus() == 1 && phoneNo!=0)
         {
-            objarr[i].get_food_cost(total);
+            room[currentRoomCounter].addFoodCost(total);
         }
     }
-
-
-
-
-
-            getch();
-
-
-
-
-/*
-for(it2=v.begin();it2!=v.end();it2++){
-    cout<<it2->first<<"  "<<it2->second<<endl;
-}
-
-*/
-    system("cls");
-
-        return x;
-            }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    return;
+    }
 
 
 int main()
 {
-    //Creating different types of rooms
-    Room obj[100];
-    int i;
-    for( i = 1 ; i <100 ; i++)
+    //Creating different types of room
+    Room room[100];
+    for( int currentRoomCounter = 1 ; currentRoomCounter <100 ; currentRoomCounter++)
     {
-        if(i<=19)
+        if(currentRoomCounter<=19)
         {
-            obj[i] = Room(obj[i-1], 1, 1, 1);
+            room[currentRoomCounter] = Room(room[currentRoomCounter-1], 1, 1, 1);
         }
-        else if(i>19 && i<=29)
+        else if(currentRoomCounter>19 && currentRoomCounter<=29)
         {
-            obj[i] = Room(obj[i-1], 1, 1, 0);
+            room[currentRoomCounter] = Room(room[currentRoomCounter-1], 1, 1, 0);
         }
-        else if(i>29 && i<=39)
+        else if(currentRoomCounter>29 && currentRoomCounter<=39)
         {
-            obj[i] = Room(obj[i-1], 1, 2, 1);
+            room[currentRoomCounter] = Room(room[currentRoomCounter-1], 1, 2, 1);
         }
-        else if(i>39 && i<=44)
+        else if(currentRoomCounter>39 && currentRoomCounter<=44)
         {
-            obj[i] = Room(obj[i-1], 1, 2, 0);
+            room[currentRoomCounter] = Room(room[currentRoomCounter-1], 1, 2, 0);
         }
-        else if(i>44 && i<=49)
+        else if(currentRoomCounter>44 && currentRoomCounter<=49)
         {
-            obj[i] = Room(obj[i-1], 1, 3, 1);
+            room[currentRoomCounter] = Room(room[currentRoomCounter-1], 1, 3, 1);
         }
-        else if(i>49 && i<=59)
+        else if(currentRoomCounter>49 && currentRoomCounter<=59)
         {
-            obj[i] = Room(obj[i-1], 2, 1, 1);
+            room[currentRoomCounter] = Room(room[currentRoomCounter-1], 2, 1, 1);
         }
-        else if(i>59 && i<=64)
+        else if(currentRoomCounter>59 && currentRoomCounter<=64)
         {
-            obj[i] = Room(obj[i-1], 2, 1, 0);
+            room[currentRoomCounter] = Room(room[currentRoomCounter-1], 2, 1, 0);
         }
-        else if(i>64 && i<=69)
+        else if(currentRoomCounter>64 && currentRoomCounter<=69)
         {
-            obj[i] = Room(obj[i-1], 2, 2, 1);
+            room[currentRoomCounter] = Room(room[currentRoomCounter-1], 2, 2, 1);
         }
-        else if(i>69 && i<=74)
+        else if(currentRoomCounter>69 && currentRoomCounter<=74)
         {
-            obj[i] = Room(obj[i-1], 2, 2, 0);
+            room[currentRoomCounter] = Room(room[currentRoomCounter-1], 2, 2, 0);
         }
-        else if(i>74 && i<=79)
+        else if(currentRoomCounter>74 && currentRoomCounter<=79)
         {
-            obj[i] = Room(obj[i-1], 2, 3, 1);
+            room[currentRoomCounter] = Room(room[currentRoomCounter-1], 2, 3, 1);
         }
-        else if(i>79 && i<=84)
+        else if(currentRoomCounter>79 && currentRoomCounter<=84)
         {
-            obj[i] = Room(obj[i-1], 3, 1, 1);
+            room[currentRoomCounter] = Room(room[currentRoomCounter-1], 3, 1, 1);
         }
-        else if(i>84 && i<=89)
+        else if(currentRoomCounter>84 && currentRoomCounter<=89)
         {
-            obj[i] = Room(obj[i-1], 3, 1, 0);
+            room[currentRoomCounter] = Room(room[currentRoomCounter-1], 3, 1, 0);
         }
-        else if(i>89 && i<=92)
+        else if(currentRoomCounter>89 && currentRoomCounter<=92)
         {
-            obj[i] = Room(obj[i-1], 3, 2, 1);
+            room[currentRoomCounter] = Room(room[currentRoomCounter-1], 3, 2, 1);
         }
-        else if(i>92 && i<=94)
+        else if(currentRoomCounter>92 && currentRoomCounter<=94)
         {
-            obj[i] = Room(obj[i-1], 3, 2, 0);
+            room[currentRoomCounter] = Room(room[currentRoomCounter-1], 3, 2, 0);
         }
         else
         {
-            obj[i] = Room(obj[i-1], 3, 3, 1);
+            room[currentRoomCounter] = Room(room[currentRoomCounter-1], 3, 3, 1);
         }
     }
 
-
-
-
-
-
-
-   // checking if status is changing properly and then checking available
-  /*     obj[0].changeStatus();
-    for(int i = 0 ; i < 100 ; i++)
-    {
-        if(obj[i].checkStatus() == 1)
-        {
-            obj[i].display();
-
-        }
-    }
-    */
-    Guest_in_room guested;
-
-
-   // checking if status is changing properly and then checking available
-       //obj[0].changeStatus();
-    /*for(int i = 0 ; i < 100 ; i++)
-    {
-        if(obj[i].checkStatus() == 1)
-        {
-            obj[i].display();
-
-        }
-    }*/
+    GuestOccupiedRoom guested;
 
     cout<<"Welcome to the hotel"<<endl;
     cout<<endl;
@@ -1791,104 +1272,110 @@ int main()
         cout<<"-------------------------------------"<<endl;
         cout<<endl;
         cout<<"Enter choice (from home menu) : ";
-        cin>>choice;
-
+        string inputChoice;
+        cin>>inputChoice;
+        int asciiTotal = 0;
+        for(auto characters:inputChoice){
+            asciiTotal+=characters;
+        }
+        choice = asciiTotal - 48;
         switch(choice)
         {
             case 1:
             {
-                system("cls");
+                clearScreen();
                 system("Color F0");
                 cout<<endl;
                 cout<<"CHECKING IN"<<endl;
                 cout<<endl;
-                guested.checkin(obj);
+                guested.checkIn(room);
                 cout<<endl;
                 getch();
-                system("cls");
+                clearScreen();
             }
             break;
 
             case 2:
             {
-                system("cls");
+                clearScreen();
                 system("Color F0");
                 cout<<endl;
                 cout<<"CHECKING OUT"<<endl;
                 cout<<endl;
-                 guested.checkout(obj);
+                 guested.checkOut(room);
                  cout<<endl;
                  getch();
-                 system("cls");
+                 clearScreen();
             }
             break;
 
             case 3:
             {
-                system("cls");
+                clearScreen();
                 system("Color F0");
                 cout<<endl;
                 cout<<"SHOWING ROOM STATUS"<<endl;
                 cout<<endl;
-                guested.showroomstatus(obj);
+                guested.showRoomStatus(room);
                 cout<<endl;
                 getch();
-                system("cls");
+                clearScreen();
             }
             break;
 
             case 4:
             {
-                system("cls");
+                clearScreen();
                 system("Color F0");
                 cout<<endl;
                 cout<<"SEARCHING GUEST"<<endl;
                 cout<<endl;
-                guested.summary(obj);
+                guested.showGuestDetails(room);
                 getch();
-                system("cls");
+                clearScreen();
             }
             break;
 
             case 5:
             {
-                system("cls");
+                clearScreen();
                 system("Color F0");
 
                 cout<<endl;
                 cout<<"SHOWING NUMBER OF DIFFERENT TYPES OF AVAILABLE ROOMS"<<endl;
                 cout<<endl;
-                guested.countRooms(obj);
+                guested.availableRoomsCount(room);
                 cout<<endl;
                 getch();
-                system("cls");
+                clearScreen();
 
             }
             break;
 
             case 6:
-                   food_service(obj);
+                   foodService(room);
                    getch();
-                   system("cls");
+                   clearScreen();
             break;
 
             case 7:
             {
-                system("cls");
+                clearScreen();
                 system("Color 4F");
-                string exiting;
+                string exitConfirmation;
                 cout<<endl<<endl<<endl<<endl;
                 cout<<"Are you sure you want to EXIT? Enter 'y' to EXIT and any other key to cancel : ";
-                cin>>exiting;
-                if(exiting != "y")
-                {
-                    choice = 1;
-                }
-                else
+                cin>>exitConfirmation;
+                if(exitConfirmation == "y")
                 {
                     cout<<endl;
                     cout<<"Exit Successful"<<endl;
                     cout<<endl;
+                }
+                else
+                {
+                    choice = 1;
+                    clearScreen();
                 }
             }
             break;
@@ -1903,4 +1390,3 @@ int main()
     }
     return 0;
 }
-
